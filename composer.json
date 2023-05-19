@@ -1,0 +1,24 @@
+{
+  "name": "lubed/http",
+  "description": "lubed http",
+  "keywords": [
+    "http"
+  ],
+  "type": "library",
+  "authors": [
+    {
+      "name": "cjj",
+      "email": "cjj8110@163.com",
+      "role": "Creator"
+    }
+  ],
+  "require": {
+    "php":"^7.4",
+    "psr/http-message": "^1.0.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "Lubed\\Http\\": "src/"
+    }
+  }
+}
