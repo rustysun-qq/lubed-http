@@ -12,9 +12,9 @@ class FileStream extends SocketStream
     /**
      * @throws HttpException
      */
-    public function __construct(string $path, string $filename = '')
+    public function __construct(string $path, string $filename = '',string $mode='rb')
     {
-        if (false === ($stream = fopen($path, 'rb'))) {
+        if (false === ($stream = fopen($path, $mode))) {
             Exceptions::InvalidArgument(
                 sprintf('%s:%s',__CLASS__, error_get_last()['message'])
             );

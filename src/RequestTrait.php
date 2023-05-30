@@ -8,6 +8,55 @@ trait RequestTrait
     private $method;
     private $requestTarget;
     private $uri;
+    private $cookies;
+    private $parsedBody;
+    private $queryParameters;
+    private $files;
+
+    public function getCookies() {
+        return $this->cookies;
+    }
+
+    public function withCookies(array $cookies) {
+        $new=clone $this;
+        $new->cookies=$cookies;
+        return $new;
+    }
+
+    public function getFiles() {
+        return $this->files;
+    }
+
+    public function withFiles($files) {
+        $new=clone $this;
+        $new->files=$files;
+        return $new;
+    }
+
+    public function getParsedBody() {
+        return $this->parsedBody;
+    }
+
+    public function withParsedBody($data) {
+        $new=clone $this;
+        if (!$data) {
+            $data=$new->getBody()->getContents();
+            $jsonDecoder=$data && is_string($data) ? json_decode($data, true) : $data;
+            $data=$jsonDecoder ? $jsonDecoder : $data;
+        }
+        $new->parsedBody=$data;
+        return $new;
+    }
+
+    public function getQueryParameters() {
+        return $this->queryParameters;
+    }
+
+    public function withQueryParameters($data) {
+        $new=clone $this;
+        $new->queryParameters=$data;
+        return $new;
+    }
 
     public function getRequestTarget() : string
     {

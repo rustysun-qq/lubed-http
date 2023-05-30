@@ -28,7 +28,7 @@ class SocketStream implements StreamInterface
     public function tell()
     {
         if (false === ($position = ftell($this->stream))) {
-            Exceptions::Runtime(sprintf('%s:%s',__CLASS__,'Cannot get stream offset'));
+            Exceptions::Runtime(sprintf('%s:Cannot get stream offset',__CLASS__));
         }
 
         return $position;
@@ -41,7 +41,7 @@ class SocketStream implements StreamInterface
     {
         if (-1 === fseek($this->stream, $offset, $whence)) {
             Exceptions::Runtime(
-                sprintf('%s:%s',__CLASS__,'Stream does not support seeking')
+                sprintf('%s:Stream does not support seeking',__CLASS__)
             );
         }
     }
@@ -71,7 +71,7 @@ class SocketStream implements StreamInterface
     public function read($length)
     {
         if (false === ($data = fread($this->stream, $length))) {
-            Exceptions::Runtime(sprintf('%s:%s',__CLASS__,'Cannot read from stream'));
+            Exceptions::Runtime(sprintf('%s:Cannot read from stream',__CLASS__));
         }
 
         return $data;
@@ -129,7 +129,7 @@ class SocketStream implements StreamInterface
     public function write($string)
     {
         if (false === ($length = fwrite($this->stream, $string))) {
-            Exceptions::Runtime(sprintf('%s:%s',__CLASS__,'Cannot write to stream'));
+            Exceptions::Runtime(sprintf('%s:Cannot write to stream',__CLASS__));
         }
 
         return $length;

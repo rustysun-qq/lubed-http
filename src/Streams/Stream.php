@@ -79,7 +79,7 @@ final class Stream implements StreamInterface
             return $new;
         }
         Exceptions::InvalidArgument(
-            sprintf('%s:%s',__CLASS__,'First argument to Stream::create() must be a string, resource or StreamInterface.')
+            sprintf('%s:First argument to Stream::create() must be a string, resource or StreamInterface.',__CLASS__)
         );
     }
 
@@ -147,7 +147,7 @@ final class Stream implements StreamInterface
     public function tell() : int
     {
         if (false === $result = ftell($this->stream)) {
-            Exceptions::Runtime(sprintf('%s:%s','Unable to determine stream position'));
+            Exceptions::Runtime(sprintf('%s:Unable to determine stream position'));
         }
 
         return $result;
@@ -169,11 +169,11 @@ final class Stream implements StreamInterface
     public function seek($offset, $whence = SEEK_SET) : void
     {
         if (!$this->seekable) {
-            Exceptions::Runtime(sprintf('%s:%s',__CLASS__,'Stream is not seekable'));
+            Exceptions::Runtime(sprintf('%s:Stream is not seekable',__CLASS__));
         }
         if (-1 === fseek($this->stream, $offset, $whence)) {
             Exceptions::Runtime(
-                sprintf('%s:%s',__CLASS__,'Unable to seek to stream position '.$offset.' with whence '.var_export($whence, true))
+                sprintf('%s:Unable to seek to stream position %s with whence %s',__CLASS__,$offset,var_export($whence, true))
             );
         }
     }
@@ -194,11 +194,11 @@ final class Stream implements StreamInterface
     public function write($string) : int
     {
         if (!$this->writable) {
-            Exceptions::Runtime(sprintf('%s:%s',__CLASS__,'Cannot write to a non-writable stream'));
+            Exceptions::Runtime(sprintf('%s:Cannot write to a non-writable stream',__CLASS__));
         }
         $this->size = null;
         if (false === $result = fwrite($this->stream, $string)) {
-            Exceptions::Runtime(sprintf('%s:%s',__CLASS__,'Unable to write to stream'));
+            Exceptions::Runtime(sprintf('%s:Unable to write to stream',__CLASS__));
         }
 
         return $result;
@@ -215,7 +215,7 @@ final class Stream implements StreamInterface
     public function read($length) : string
     {
         if (!$this->readable) {
-            Exceptions::Runtime(sprintf('%s:%s',__CLASS__,'Cannot read from non-readable stream'));
+            Exceptions::Runtime(sprintf('%s:Cannot read from non-readable stream',__CLASS__));
         }
 
         return fread($this->stream, $length);
@@ -227,10 +227,10 @@ final class Stream implements StreamInterface
     public function getContents() : string
     {
         if (!isset($this->stream)) {
-            Exceptions::Runtime(sprintf('%s:%s',__CLASS__,'Unable to read stream contents'));
+            Exceptions::Runtime(sprintf('%s:Unable to read stream contents',__CLASS__));
         }
         if (false === $contents = stream_get_contents($this->stream)) {
-            Exceptions::Runtime(sprintf('%s:%s',__CLASS__,'Unable to read stream contents'));
+            Exceptions::Runtime(sprintf('%s:Unable to read stream contents',__CLASS__));
         }
 
         return $contents;

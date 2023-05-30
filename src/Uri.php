@@ -31,6 +31,8 @@ final class Uri implements UriInterface
             if (false === $parts = parse_url($uri)) {
                 Exceptions::InvalidArgument(sprintf("%s:Unable to parse URI:%s",__CLASS__,$uri));
             }
+            print_r($parts);die("\n---\n");
+
             $this->scheme = isset($parts['scheme']) ? strtolower($parts['scheme']) : '';
             $this->userInfo = $parts['user'] ?? '';
             $this->host = isset($parts['host']) ? strtolower($parts['host']) : '';
@@ -67,6 +69,7 @@ final class Uri implements UriInterface
         if ('' === $this->host) {
             return '';
         }
+        
         $authority = $this->host;
         if ('' !== $this->userInfo) {
             $authority = $this->userInfo.'@'.$authority;
@@ -149,11 +152,23 @@ final class Uri implements UriInterface
         if (!is_string($host)) {
             Exceptions::InvalidArgument(sprintf('%s:Host must be a string',__CLASS__));
         }
-        if ($this->host === $host = strtolower($host)) {
+        
+        $host = strtolower($host);
+
+        if ($this->host === $host) {
             return $this;
         }
+
         $new = clone $this;
         $new->host = $host;
+
+        return $new;
+    }
+
+    public function withOriginalUri($uri) : Uri
+    {
+        $new = clone $this;
+        $new->uri = $uri;
 
         return $new;
     }
