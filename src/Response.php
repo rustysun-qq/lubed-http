@@ -73,11 +73,11 @@ final class Response implements ResponseInterface
     private $statusCode;
 
     public function __construct(
-        int $status = 200,
-        array $headers = [],
         $body = null,
-        string $version = '1.1',
-        string $reason = null
+        int $status = 200,
+        string $reason = null,
+        array $headers = [],
+        string $version = '1.1'
     ) {
         $this->reasonPhrase = '';
         if ('' !== $body && null !== $body) {
@@ -123,5 +123,57 @@ final class Response implements ResponseInterface
         $new->reasonPhrase = $reasonPhrase;
 
         return $new;
+    }
+
+    public function sendHeaders()
+    {
+        if (headers_sent()) {
+            return $this;
+        }
+
+        // headers
+        foreach ($this->getHeaders() as $name => $value) {
+            header($name.': '.$value, false, $this->statusCode);
+        }
+
+        header(sprintf('HTTP/%s %s %s', $this->getProtocolVersion(), $this->statusCode, $this->reasonPhrase), true, $this->statusCode);
+
+        return $this;
+    }
+
+    public function sendContent()
+    {
+        echo $this->getBody();
+
+        return $this;
+    }
+
+    public function send()
+    {
+        $this->sendHeaders();
+        $this->sendContent();
+
+        if (\function_exists('fastcgi_finish_request')) {
+            fastcgi_finish_request();
+        } elseif (!\in_array(\PHP_SAPI, ['cli', 'phpdbg'], true)) {
+            static::closeOutputBuffers(0, true);
+        }
+
+        return $this;
+    }
+
+    public static function closeOutputBuffers(int $targetLevel, bool $flush): void
+    {
+        $status = \ob_get_status(true);
+        $level = \count($status);
+        $flags = \PHP_OUTPUT_HANDLER_REMOVABLE | ($flush ? \PHP_OUTPUT_HANDLER_FLUSHABLE : \PHP_OUTPUT_HANDLER_CLEANABLE);
+
+        while ($level-- > $targetLevel && ($s = $status[$level]) && (!isset($s['del']) ? !isset($s['flags']) || ($s['flags'] & $flags) === $flags : $s['del'])) {
+            if ($flush) {
+                ob_end_flush();
+            } else {
+                ob_end_clean();
+            }
+        }
     }
 }

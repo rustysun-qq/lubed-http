@@ -58,6 +58,11 @@ trait RequestTrait
         return $new;
     }
 
+    public function getInput():array
+    {
+        return array_merge($this->queryParameters,$this->parsedBody);
+    }
+
     public function getRequestTarget() : string
     {
         if (null !== $this->requestTarget) {
