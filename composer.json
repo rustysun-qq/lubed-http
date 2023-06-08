@@ -9,7 +9,8 @@
         "lubed/utils":"dev-main",
         "lubed/supports": "dev-main",
         "lubed/exceptions": "dev-main",
-        "psr/http-message": "1.0.1"
+        "psr/http-message": "1.0.1",
+        "lubed/container": "dev-main"
     },
     "config": {
     },

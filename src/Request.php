@@ -1,23 +1,29 @@
 <?php
 namespace Lubed\Http;
 
-use Lubed\Http\Streams\Stream;
+use Lubed\Http\Streams\{Stream,InputStream};
 use Psr\Http\Message\{RequestInterface, StreamInterface, UriInterface};
+use Lubed\Supports\Ability\Aliasable;
 
-class Request implements RequestInterface
+class Request implements RequestInterface,Aliasable
 {
     private $server;
+    private bool $is_routed=FALSE;
 
     use MessageTrait;
     use RequestTrait;
 
     public function __construct(
-        string $method,
-        $uri,
+        string $method='',
+        $uri='',
         array $headers = [],
         $body = null,
         string $version = '1.1'
     ) {
+        if(!$method&&!$uri&&!$headers){
+            $this->initFromGlobal();
+            return;
+        }
         if (!($uri instanceof UriInterface)) {
             $uri = new Uri($uri);
         }
@@ -36,9 +42,110 @@ class Request implements RequestInterface
         }
     }
 
+    public function getAlias():string
+    {
+        return 'lubed_http_request';
+    }
+
+    public function isRouted():bool
+    {
+        return $this->is_routed;
+    }
+
+    public function setRouted(bool $is_routed)
+    {
+        $this->is_routed=$is_routed;
+    }
+
     public function withServer($server)
     {
         $this->server=$server;
         return $this;
+    }
+
+    private function initFromGlobal()
+    {
+        $this->uri = $this->initUriByServerEnv();
+        $protocol = $_SERVER['SERVER_PROTOCOL'] ?? '';
+        $this->protocol = $protocol ? str_replace('HTTP/', '', $protocol) : '1.1';
+        $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
+        $this->method = $method ? $method : 'GET';
+        //get headers
+        $headers = function_exists('getallheaders') ? getallheaders() : [];
+
+        if (!$headers) {
+            $headers = [];
+            foreach ($_SERVER as $name=>$value) {
+                if ('HTTP_'===substr($name, 0, 5)) {
+                    $header = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name,5)))));
+                    $headers[$header]=$value;
+                }
+            }
+        }
+
+        $this->setHeaders($headers);
+
+        if (!$this->hasHeader('Host')) {
+            $this->updateHostFromUri();
+        }
+
+        //body
+        $body=new InputStream();
+
+        if ('' !== $body && null !== $body) {
+            $this->stream = Stream::create($body);
+        }
+
+        $this->withCookies($_COOKIE)
+           ->withParsedBody($_POST)
+           ->withQueryParameters($_GET)
+           ->withFiles($_FILES)
+           ->withServer($_SERVER);
+    }
+
+    private function initUriByServerEnv() {
+        $uri=new Uri('');
+        $env_https=$_SERVER['HTTPS'] ?? 'off';
+        if ($env_https) {
+            $uri=$uri->withScheme($env_https == 'on' ? 'https' : 'http');
+        }
+        $env_host=$_SERVER['HTTP_HOST'];
+        $env_host=$env_host ? $env_host : $_SERVER['SERVER_NAME'];
+
+        if ($env_host) {
+            $host_info = explode(':',$env_host);
+            $uri=$uri->withHost($host_info[0]??$env_host);
+        }
+        $env_port=$_SERVER['SERVER_PORT'];
+        if ($env_port) {
+            $uri=$uri->withPort($env_port);
+        }
+        $env_uri=$_SERVER['REQUEST_URI'];
+        if ($env_uri) {
+            $uri=$uri->withOriginalUri($env_uri);
+        }
+
+        $path_info=$_SERVER['PATH_INFO']??NULL;
+        $path=$path_info ? $path_info : $env_uri;
+
+        if ($path) {
+            $path=current(explode('?', $path));
+            $uri=$uri->withPath($path);
+        }
+
+        //TODO:remove默认格式
+        $format='json';
+
+        if ($path && false !== strpos('.', $format)) {
+            $path_info=explode('.', $path);
+            $format=$path_info && is_array($path_info) ? array_pop($path_info) : $format;
+        }
+
+        $this->format=strtolower($format);
+        $env_query=$_SERVER['QUERY_STRING']??'';
+        if ($env_query) {
+            $uri=$uri->withQuery($env_query);
+        }
+        return $uri;
     }
 }
