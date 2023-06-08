@@ -2,7 +2,7 @@
 namespace Lubed\Http;
 
 use Lum\Http\Streams\SocketStream;
-use Psr\Http\Message\RequestInterface;
+use Lubed\Suports\PSR\HttpMessage\RequestInterface;
 
 class Transport
 {

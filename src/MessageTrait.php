@@ -2,7 +2,7 @@
 namespace Lubed\Http;
 
 use Lubed\Http\Streams\Stream;
-use Psr\Http\Message\StreamInterface;
+use Lubed\Suports\PSR\HttpMessage\StreamInterface;
 
 trait MessageTrait
 {

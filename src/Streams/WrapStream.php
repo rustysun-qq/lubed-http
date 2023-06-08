@@ -3,7 +3,7 @@ namespace Lubed\Http\Streams;
 
 use Lubed\Http\Exceptions;
 use Lubed\Http\HttpException;
-use Psr\Http\Message\StreamInterface;
+use Lubed\Suports\PSR\HttpMessage\StreamInterface;
 
 class WrapStream implements StreamInterface
 {

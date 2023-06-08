@@ -1,7 +1,7 @@
 <?php
 namespace Lubed\Http;
 
-use Psr\Http\Message\UriInterface;
+use Lubed\Suports\PSR\HttpMessage\UriInterface;
 
 trait RequestTrait
 {

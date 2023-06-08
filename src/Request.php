@@ -2,7 +2,7 @@
 namespace Lubed\Http;
 
 use Lubed\Http\Streams\{Stream,InputStream};
-use Psr\Http\Message\{RequestInterface, StreamInterface, UriInterface};
+use Lubed\Suports\PSR\HttpMessage\{RequestInterface, StreamInterface, UriInterface};
 use Lubed\Supports\Ability\Aliasable;
 
 class Request implements RequestInterface,Aliasable
