@@ -5,7 +5,7 @@ use ArrayIterator;
 use Lubed\Http\Exceptions;
 use Lubed\Http\HttpException;
 use Lubed\Http\Misc;
-use Lubed\Suports\PSR\HttpMessage\StreamInterface;
+use Lubed\Supports\PSR\HttpMessage\StreamInterface;
 
 class MultipartStream implements StreamInterface
 {

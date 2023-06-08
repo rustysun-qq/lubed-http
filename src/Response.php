@@ -2,7 +2,7 @@
 namespace Lubed\Http;
 
 use Lubed\Http\Streams\Stream;
-use Lubed\Suports\PSR\HttpMessage\{ResponseInterface, StreamInterface};
+use Lubed\Supports\PSR\HttpMessage\{ResponseInterface, StreamInterface};
 
 final class Response implements ResponseInterface
 {

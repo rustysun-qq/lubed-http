@@ -1,7 +1,7 @@
 <?php
 namespace Lubed\Http;
 
-use Lubed\Suports\PSR\HttpMessage\UriInterface;
+use Lubed\Supports\PSR\HttpMessage\UriInterface;
 
 final class Uri implements UriInterface
 {

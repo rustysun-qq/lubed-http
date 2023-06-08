@@ -3,7 +3,7 @@ namespace Lubed\Http\Streams;
 
 use Lubed\Http\Exceptions;
 use Lubed\Http\HttpException;
-use Lubed\Suports\PSR\HttpMessage\StreamInterface;
+use Lubed\Supports\PSR\HttpMessage\StreamInterface;
 
 final class Stream implements StreamInterface
 {
