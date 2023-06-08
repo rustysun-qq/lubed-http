@@ -1,4 +1,5 @@
 {
+    "name": "lubed/http",
     "type": "project",
     "license": "proprietary",
     "prefer-stable": true,
