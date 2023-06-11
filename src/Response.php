@@ -4,7 +4,7 @@ namespace Lubed\Http;
 use Lubed\Http\Streams\Stream;
 use Lubed\Supports\PSR\HttpMessage\{ResponseInterface, StreamInterface};
 
-final class Response implements ResponseInterface
+class Response implements ResponseInterface
 {
     use MessageTrait;
 
