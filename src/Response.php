@@ -1,8 +1,7 @@
 <?php
 namespace Lubed\Http;
 
-use Lubed\Http\Streams\Stream;
-use Lubed\Supports\PSR\HttpMessage\{ResponseInterface, StreamInterface};
+use Lubed\Supports\PSR\HttpMessage\{ResponseInterface};
 
 class Response implements ResponseInterface
 {
@@ -71,6 +70,7 @@ class Response implements ResponseInterface
 
     private $reasonPhrase;
     private $statusCode;
+    private $content;
 
     public function __construct(
         $body = null,
@@ -81,7 +81,7 @@ class Response implements ResponseInterface
     ) {
         $this->reasonPhrase = '';
         if ('' !== $body && null !== $body) {
-            $this->stream = Stream::create($body);
+            $this->content = $body;
         }
         $this->statusCode = $status;
         $this->setHeaders($headers);
@@ -143,7 +143,7 @@ class Response implements ResponseInterface
 
     public function sendContent()
     {
-        echo $this->getBody();
+        echo $this->getContent();
 
         return $this;
     }
@@ -175,5 +175,13 @@ class Response implements ResponseInterface
                 ob_end_clean();
             }
         }
+    }
+
+    protected function setContent(string $content){
+        $this->content=$content;
+    }
+
+    protected function getContent(){
+        return $this->content;
     }
 }
