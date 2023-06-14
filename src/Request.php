@@ -20,10 +20,6 @@ class Request implements RequestInterface,Aliasable
         $body = null,
         string $version = '1.1'
     ) {
-        if(!$method&&!$uri&&!$headers){
-            $this->initFromGlobal();
-            return;
-        }
         if (!($uri instanceof UriInterface)) {
             $uri = new Uri($uri);
         }
@@ -63,13 +59,13 @@ class Request implements RequestInterface,Aliasable
         return $this;
     }
 
-    private function initFromGlobal()
+    public static function createFromGlobal()
     {
-        $this->uri = $this->initUriByServerEnv();
+        $uri = static::initUriByServerEnv();
         $protocol = $_SERVER['SERVER_PROTOCOL'] ?? '';
-        $this->protocol = $protocol ? str_replace('HTTP/', '', $protocol) : '1.1';
+        $version = $protocol ? str_replace('HTTP/', '', $protocol) : '1.1';
         $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
-        $this->method = $method ? $method : 'GET';
+        $method = $method ? $method : 'GET';
         //get headers
         $headers = function_exists('getallheaders') ? getallheaders() : [];
 
@@ -83,27 +79,21 @@ class Request implements RequestInterface,Aliasable
             }
         }
 
-        $this->setHeaders($headers);
-
-        if (!$this->hasHeader('Host')) {
-            $this->updateHostFromUri();
-        }
-
         //body
         $body=new InputStream();
 
         if ('' !== $body && null !== $body) {
-            $this->stream = Stream::create($body);
+            $body = Stream::create($body);
         }
-
-        $this->withCookies($_COOKIE)
-           ->withParsedBody($_POST)
-           ->withQueryParameters($_GET)
-           ->withFiles($_FILES)
-           ->withServer($_SERVER);
+        $request = new self($method,$uri,$headers,$body,$version);
+        return $request->withCookies($_COOKIE)
+            ->withParsedBody($_POST)
+            ->withQueryParameters($_GET)
+            ->withFiles($_FILES)
+            ->withServer($_SERVER);
     }
 
-    private function initUriByServerEnv() {
+    private static function initUriByServerEnv() {
         $uri=new Uri('');
         $env_https=$_SERVER['HTTPS'] ?? 'off';
         if ($env_https) {
@@ -141,7 +131,6 @@ class Request implements RequestInterface,Aliasable
             $format=$path_info && is_array($path_info) ? array_pop($path_info) : $format;
         }
 
-        $this->format=strtolower($format);
         $env_query=$_SERVER['QUERY_STRING']??'';
         if ($env_query) {
             $uri=$uri->withQuery($env_query);
