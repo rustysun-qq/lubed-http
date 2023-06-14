@@ -9,8 +9,7 @@
         "ext-iconv": "*",
         "lubed/utils":"dev-main",
         "lubed/supports": "dev-main",
-        "lubed/exceptions": "dev-main",
-        "lubed/container": "dev-main"
+        "lubed/exceptions": "dev-main"
     },
     "config": {
     },
