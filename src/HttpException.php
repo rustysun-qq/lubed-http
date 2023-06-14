@@ -1,24 +1,17 @@
 <?php
 namespace Lubed\Http;
 
-use Exception;
-use Throwable;
+use Lubed\Exceptions\RuntimeException;
 
-final class HttpException extends Exception
+final class HttpException extends RuntimeException
 {
     private $data;
     public function __construct(
         int $code = 0,
         string $message = "",
-        $data = null,
+        $options = [],
         Throwable $previous = null
     ) {
-        parent::__construct($message, $code, $previous);
-        $this->data = $data;
-    }
-
-    public function getData()
-    {
-        return $this->data;
+        parent::__construct($code,$message, $options, $previous);
     }
 }

@@ -17,7 +17,7 @@ final class Exceptions
         string $message = "",
         $data = null,
         Throwable $previous = null
-    ) {
+    ):HttpException {
         throw new HttpException(self::NETWORK_FAILED, $message, $data, $previous);
     }
 
@@ -27,7 +27,7 @@ final class Exceptions
     public static function InvalidArgument(
         string $message = "",
         $data = null,
-        Throwable $previous = null) {
+        Throwable $previous = null):HttpException {
         throw new HttpException(self::INVALID_ARGUMENT, $message, $data, $previous);
     }
 
@@ -37,7 +37,7 @@ final class Exceptions
     public static function Runtime(
         string $message = "",
         $data = null,
-        Throwable $previous = null) {
+        Throwable $previous = null):HttpException {
         throw new HttpException(self::RUN_FAILED, $message, $data, $previous);
     }
 }
