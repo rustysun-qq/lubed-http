@@ -3,13 +3,14 @@
     "type": "project",
     "license": "proprietary",
     "prefer-stable": true,
+    "version": "0.2",
     "require": {
         "php": ">=8.0",
         "ext-json": "*",
         "ext-iconv": "*",
-        "lubed/utils":"dev-main",
-        "lubed/supports": "dev-main",
-        "lubed/exceptions": "dev-main"
+        "lubed/utils":"0.2",
+        "lubed/supports": "0.2",
+        "lubed/exceptions": "0.2"
     },
     "config": {
     },
