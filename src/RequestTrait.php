@@ -57,15 +57,27 @@ trait RequestTrait {
         return $new;
     }
 
-    public function getInput() : array {
+    public function getInput(?string $name=null,$default=null) {
         if ($this->queryParameters && $this->parsedBody) {
-            return array_merge($this->queryParameters, $this->parsedBody);
+            $result= array_merge($this->queryParameters, $this->parsedBody);
+            if(null===$name){
+                return $result;
+            }
+            return $result[$name]??$default;
         }
         if ($this->parsedBody) {
-            return $this->parsedBody;
+            $result= $this->parsedBody;
+            if(null===$name){
+                return $result;
+            }
+            return $result[$name]??$default;
         }
         if ($this->queryParameters) {
-            return $this->queryParameters;
+            $result= $this->queryParameters;
+            if(null===$name){
+                return $result;
+            }
+            return $result[$name]??$default;
         }
         return [];
     }
