@@ -25,7 +25,7 @@ class JsonResponse extends Response {
         return $this->update();
     }
 
-    public function setData($data=[]) {
+    public function setData($data):JsonResponse {
         try {
             $data=json_encode($data, $this->encodingOptions);
         } catch(\Exception $e) {
@@ -52,14 +52,15 @@ class JsonResponse extends Response {
         return $this->setData(json_decode($this->data));
     }
 
-    protected function update() {
+    protected function update():JsonResponse {
         if (null !== $this->callback) {
-            $this->withHeader('Content-Type', 'text/javascript');
-            return $this->setContent(sprintf('/**/%s(%s);', $this->callback, $this->data));
+            $message=$this->withHeader('Content-Type', 'text/javascript');
+            return $message->setContent(sprintf('/**/%s(%s);', $this->callback, $this->data));
         }
+        $message=null;
         if (!$this->hasHeader('Content-Type') || 'text/javascript' === $this->getHeader('Content-Type')) {
-            $this->withHeader('Content-Type', 'application/json');
+            $message=$this->withHeader('Content-Type', 'application/json');
         }
-        return $this->setContent($this->data);
+        return null!==$message?$message->setContent($message->data):$this->setContent($this->data);
     }
 }

@@ -177,8 +177,9 @@ class Response implements ResponseInterface
         }
     }
 
-    protected function setContent(string $content){
+    protected function setContent(string $content):Response{
         $this->content=$content;
+        return $this;
     }
 
     protected function getContent(){
