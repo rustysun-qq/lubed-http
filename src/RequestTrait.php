@@ -79,7 +79,7 @@ trait RequestTrait {
             }
             return $result[$name]??$default;
         }
-        return [];
+        return $default;
     }
 
     public function getRequestTarget() : string {
