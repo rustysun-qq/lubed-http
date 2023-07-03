@@ -31,7 +31,6 @@ final class Uri implements UriInterface
             if (false === $parts = parse_url($uri)) {
                 Exceptions::InvalidArgument(sprintf("%s:Unable to parse URI:%s",__CLASS__,$uri));
             }
-            print_r($parts);die("\n---\n");
 
             $this->scheme = isset($parts['scheme']) ? strtolower($parts['scheme']) : '';
             $this->userInfo = $parts['user'] ?? '';
